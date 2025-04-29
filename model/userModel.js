@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    profilePic : {
+    profileImage : {
         type: String
     },
     isUser: {

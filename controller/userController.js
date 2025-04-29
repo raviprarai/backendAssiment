@@ -31,13 +31,15 @@ exports.userSignup = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             let uploadedProfilePicUrl = null;
             if (req.file) {
+               // console.log(req.file);
+                
                 uploadedProfilePicUrl = await commonFunction.uploadImage(req.file.buffer);
+                //console.log(uploadedProfilePicUrl)
             }
-
             const newuser = new userModel({
                 email,
                 password: hashedPassword,
-                profilePic: uploadedProfilePicUrl || ""
+                profileImage: uploadedProfilePicUrl || ""
 
             });
             const saveduser = await newuser.save();
@@ -97,6 +99,7 @@ exports.userlogin = async (req, res) => {
                     result: {
                         _id: userResult._id,
                         email: userResult.email,
+                        profileImage:userResult.profileImage,
                         token,
                     },
                 });
@@ -164,10 +167,10 @@ exports.userAddBlog = async (req, res) => {
                 userId: req.user._id
 
             });
-            await newBlog.save();
+           const data= await newBlog.save();
             return res.status(200).json({
                 status: 1,
-                message: "Users add blog sucessfully",
+                message: "Users add blog sucessfully",result:data
             });
         }
     } catch (error) {
@@ -391,3 +394,29 @@ exports.totalDashboardData = async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
+
+exports.getComment=async(req,res)=>{
+    try {
+
+        const result = await commentModel.find({ blogId: req.params.blogId }).populate("userId")
+            .lean()
+        if (!result.length) {
+            return res.status(404).json({
+                status: 0,
+                message: "Data Not Founded...",
+            });
+        }
+        return res.status(200).json({
+            status: 1,
+            message: "All Data Founded Successfully....",
+            result,
+        });
+
+    } catch (error) {
+        console.log("list Blog API Error=============>", error);
+        return res.status(500).json({
+            status: 0,
+            message: error.toString(),
+        });
+    }
+}

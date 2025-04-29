@@ -16,4 +16,5 @@ router.delete("/blogDelete/:id",verifyTokenAndUser,userRouter.blogDelete);
 router.post("/createComment",verifyTokenAndUser,userRouter.createComment);
 router.post("/replyComment",verifyTokenAndUser,userRouter.replyComment);
 router.get("/totalDashboardData",verifyTokenAndUser,userRouter.totalDashboardData);
+router.get("/getComment/:blogId",verifyTokenAndUser,userRouter.getComment);
 module.exports = router; 
